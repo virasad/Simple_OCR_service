@@ -6,15 +6,16 @@ from sklearn.model_selection import train_test_split
 
 class DatasetParser(object):
     '''
-    Class to parse the dataset_utils and split it into train and test sets.
+    Class to parse the data_utils and split it into train and test sets.
     '''
 
-    def __init__(self, labeltxt_p):
+    def __init__(self, labeltxt_p, images_dir):
         """
-        Initializes the dataset_utils parser.
+        Initializes the data_utils parser.
         :param images_dir: The path to the images.
         """
         self.labels_p = labeltxt_p
+        self.images_dir = images_dir
         self.characters = set()
         self.max_len = 10
         self.df_dataset = self._load_dataset()
@@ -35,7 +36,10 @@ class DatasetParser(object):
             lines = file.readlines()
             for line in lines:
                 line = line.strip().split(' ')
-                images.append(line[0])
+                image_base_name = os.path.basename(line[0])
+                image_path = os.path.join(self.images_dir, image_base_name)
+                image_path = os.path.abspath(image_path)
+                images.append(image_path)
                 labels.append(line[1])
                 for ch in line[1]:
                     self.characters.add(ch)
@@ -50,7 +54,7 @@ class DatasetParser(object):
 
 
 def main():
-    DATASET_PATH = '/home/amir/Projects/Simple_htr_service/train/dataset/gt.txt'
+    DATASET_PATH = '/dataset/gt.txt'
     a = DatasetParser(DATASET_PATH).char_to_labels
     print(a)
 
