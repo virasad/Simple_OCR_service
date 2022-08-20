@@ -23,7 +23,7 @@ async def set_batch(batch_size: int):
 
 
 @app.post("/inference")
-async def inference(images: list[UploadFile]):
+async def inference(images: list):
     images_path = []
     for image in images:
         pil_image = Image.open(image.file)
