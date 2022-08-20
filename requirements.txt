@@ -4,4 +4,12 @@ numpy
 pandas
 sklearn
 scikit-learn
+uvicorn
 torch
+fastapi
+pytorch_lightning
+albumentations
+requests
+Pillow
+nltk
+fastapi_utils
