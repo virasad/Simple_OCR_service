@@ -8,7 +8,7 @@ from data_utils.custom_cb import ClientLogger
 # load datamodule
 
 
-def ocr_trainer(img_w, img_h, labels_txt_p, images_path, checkpoint_path, model_name, max_epochs=10,
+def ocr_trainer(img_w, img_h, labels_txt_p, images_path, save_dir, model_name, max_epochs=10,
                 lr=1e-3,
                 batch_size=128,
                 log_url=None,
@@ -34,7 +34,7 @@ def ocr_trainer(img_w, img_h, labels_txt_p, images_path, checkpoint_path, model_
 
     custom_cb = ClientLogger(log_url, task_id, max_epochs=max_epochs)
     checkpoint_callback = pl.callbacks.ModelCheckpoint(
-        dirpath=checkpoint_path,
+        dirpath=save_dir,
         save_top_k=1,
         verbose=True,
         monitor='val_loss',
@@ -62,7 +62,7 @@ def ocr_trainer(img_w, img_h, labels_txt_p, images_path, checkpoint_path, model_
 
 def test():
     ocr_trainer(img_w=128, img_h=64, labels_txt_p='dataset/gt.txt', images_path='dataset/test',
-                checkpoint_path='checkpoints/', model_name='model2', max_epochs=10, lr=1e-3, batch_size=256
+                save_dir='checkpoints/', model_name='model2', max_epochs=10, lr=1e-3, batch_size=256
                 )
 
 
