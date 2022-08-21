@@ -8,7 +8,7 @@ app = FastAPI(title="OCR API", description="OCR API this package developed for t
 @app.post("/train")
 async def train(img_w: int, img_h: int, labels_txt_p: str, images_path: str, save_dir: str, model_name: str,
                 max_epochs: int = 1000, lr: float = 1e-3, batch_size: int = 128, log_url: str = None,
-                task_id: str = None, response_url: str = None):
+                task_id: str = None, response_url: str = None, ocr_type: str = None):
     ocr_trainer(img_w=img_w, img_h=img_h,
                 labels_txt_p=labels_txt_p,
                 images_path=images_path,
@@ -19,5 +19,6 @@ async def train(img_w: int, img_h: int, labels_txt_p: str, images_path: str, sav
                 batch_size=batch_size,
                 log_url=log_url,
                 task_id=task_id,
-                response_url=response_url)
+                response_url=response_url,
+                ocr_type=ocr_type)
     return {"status": "success", "message": "model trained"}

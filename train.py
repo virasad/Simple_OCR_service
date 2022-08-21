@@ -16,7 +16,8 @@ def ocr_trainer(img_w, img_h, labels_txt_p, images_path, save_dir, model_name, m
                 batch_size=128,
                 log_url=None,
                 response_url=None,
-                task_id=None):
+                task_id=None,
+                ocr_type=None):
     hidden_size = 256
 
     data_module = datamodule.OCRDataModule(labels_txt=labels_txt_p,
@@ -36,8 +37,9 @@ def ocr_trainer(img_w, img_h, labels_txt_p, images_path, save_dir, model_name, m
                    lr=lr,
                    decode='greedy')
 
-    custom_cb = ClientLogger(log_url, task_id, max_epochs=max_epochs, response_url=response_url,
-                             model_path=os.path.join(save_dir, model_name))
+    custom_cb = ClientLogger(log_url=log_url, task_id=task_id, max_epochs=max_epochs, response_url=response_url,
+                             model_path=os.path.join(save_dir, model_name),
+                             ocr_type=ocr_type)
     checkpoint_callback = pl.callbacks.ModelCheckpoint(
         dirpath=save_dir,
         save_top_k=1,
