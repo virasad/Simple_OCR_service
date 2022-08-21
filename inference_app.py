@@ -18,19 +18,21 @@ async def set_model(model_path: str):
 
 @app.post("/set-batch")
 async def set_batch(batch_size: int):
-    inference_ocr.batch_size(batch_size)
+    inference_ocr.batch_size = batch_size
     return {"status": "success", "message": "batch size set to {}".format(batch_size)}
 
 
 @app.post("/inference")
 async def inference(images: list):
     images_path = []
+    results = []
     for image in images:
         pil_image = Image.open(image.file)
         np_image = np.array(pil_image)
         images_path.append(np_image)
         res = inference_ocr.inference(images_path)
-    return res
+        results.append(res)
+    return results
 
 
 @app.on_event("startup")
