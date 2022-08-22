@@ -35,7 +35,7 @@ class DatasetParser(object):
         with open(self.labels_p, 'r') as file:
             lines = file.readlines()
             for line in lines:
-                line = line.strip("\n").split(" ")
+                line = line.strip("\n").split("\t")
                 image_base_name = os.path.basename(line[0])
                 image_path = os.path.join(self.images_dir, image_base_name)
                 image_path = os.path.abspath(image_path)
