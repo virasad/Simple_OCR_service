@@ -4,11 +4,15 @@ from pytorch_lightning.utilities.distributed import rank_zero_only
 
 
 class ClientLogger(Logger):
-    def __init__(self, log_url=None, task_id=None, max_epochs=None):
+    def __init__(self, model_path, log_url=None, task_id=None, max_epochs=None, response_url=None, ocr_type=None):
+        super().__init__()
         self.log_url = log_url
         self.task_id = task_id
         self.max_epochs = max_epochs
         self.last_metrics = {}
+        self.response_url = response_url
+        self.model_path = model_path
+        self.ocr_type = ocr_type
 
     @property
     def name(self):
@@ -30,6 +34,7 @@ class ClientLogger(Logger):
         print(f"Logging step: {step}")
         metrics['step'] = step
         metrics['task_id'] = self.task_id
+        metrics['ocr_type'] = self.ocr_type
         if self.max_epochs is not None:
             metrics['is_finished'] = metrics['epoch'] >= self.max_epochs
         print(f"Logging metrics: {metrics}")
@@ -49,6 +54,10 @@ class ClientLogger(Logger):
         # Optional. Any code that needs to be run after training
         # finishes goes here
         print(f"Finalizing with status: {status}, last metrics: {self.last_metrics}")
-        if self.log_url:
-            requests.post(self.log_url, json={'status': status, 'task_id': self.task_id, 'is_finished': True,
-                                              'metrics': self.last_metrics})
+        if self.response_url:
+            requests.post(self.response_url, json={'status': status, 'task_id': self.task_id, 'is_finished': True,
+                                              'ocr_type': self.ocr_type,
+                                              'metrics': self.last_metrics,
+                                              'model_path': self.model_path
+                                              }
+                          )

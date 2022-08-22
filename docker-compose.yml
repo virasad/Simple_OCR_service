@@ -1,0 +1,56 @@
+version: "3.8"
+services:
+  inference:
+    container_name: "ocr-inference"
+    build: .
+    command: "uvicorn inference_app:app --host 0.0.0.0 --port 5561 --log-level info"
+    expose:
+      - "5561"
+    ports:
+      - "5561:5561"
+    volumes:
+      - ./:/code
+      - ./volumes/weights:/weights
+
+    environment:
+      - PORT=5561
+      - WEIGHTS_DIR=/weights
+    networks:
+      - ocr-network
+    ipc: host
+    shm_size: 1024M
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [ gpu ]
+
+  train:
+    container_name: "ocr-train"
+    build: .
+    command: "uvicorn train_app:app --host 0.0.0.0 --port 5562 --log-level info"
+    expose:
+      - "5562"
+    ports:
+      - "5562:5562"
+    volumes:
+      - ./:/code
+      - ./volumes/weights:/weights
+      - ./volumes/dataset:/dataset
+    environment:
+      - RESPONSE_URL=http://web:8000/api/v1/train/done
+      - LOGGER_URL=http://127.0.0.1:8000/logger
+      - IS_LOGGER_ON=False
+      - WEIGHTS_DIR=/weights
+    ipc: host
+    shm_size: 1024M
+    networks:
+      - ocr-network
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [ gpu ]
+
+networks:
+  ocr-network:
