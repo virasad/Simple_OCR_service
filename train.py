@@ -1,9 +1,12 @@
 # import trainer
+import os
+
 import pytorch_lightning as pl
 
 from data_utils import datamodule
-from model.model import LitOCR
 from data_utils.custom_cb import ClientLogger
+from model.model import LitOCR
+
 
 # load datamodule
 
@@ -12,7 +15,9 @@ def ocr_trainer(img_w, img_h, labels_txt_p, images_path, save_dir, model_name, m
                 lr=1e-3,
                 batch_size=128,
                 log_url=None,
-                task_id=None):
+                response_url=None,
+                task_id=None,
+                ocr_type=None):
     hidden_size = 256
 
     data_module = datamodule.OCRDataModule(labels_txt=labels_txt_p,
@@ -32,14 +37,16 @@ def ocr_trainer(img_w, img_h, labels_txt_p, images_path, save_dir, model_name, m
                    lr=lr,
                    decode='greedy')
 
-    custom_cb = ClientLogger(log_url, task_id, max_epochs=max_epochs)
+    custom_cb = ClientLogger(log_url=log_url, task_id=task_id, max_epochs=max_epochs, response_url=response_url,
+                             model_path=os.path.join(save_dir, model_name),
+                             ocr_type=ocr_type)
     checkpoint_callback = pl.callbacks.ModelCheckpoint(
         dirpath=save_dir,
         save_top_k=1,
         verbose=True,
         monitor='val_loss',
         mode='min',
-        filename=model_name + '_{epoch}_{val_loss:.2f}_{val_acc:.2f}', )
+        filename=model_name)
 
     early_stop_callback = pl.callbacks.EarlyStopping(
         monitor='val_loss',
