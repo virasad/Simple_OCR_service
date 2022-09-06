@@ -4,7 +4,7 @@ import numpy as np
 from PIL import Image
 from fastapi_utils.tasks import repeat_every
 import shutil
-
+from typing import List
 
 app = FastAPI()
 inference_ocr = InferenceOCR()
@@ -23,16 +23,14 @@ async def set_batch(batch_size: int):
 
 
 @app.post("/inference")
-async def inference(images: list):
+async def inference(images: List[UploadFile] = File(...)):
     images_path = []
-    results = []
     for image in images:
         pil_image = Image.open(image.file)
         np_image = np.array(pil_image)
         images_path.append(np_image)
-        res = inference_ocr.inference(images_path)
-        results.append(res)
-    return results
+    res = inference_ocr.inference(images_path)
+    return res
 
 
 @app.on_event("startup")
