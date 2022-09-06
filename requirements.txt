@@ -13,3 +13,4 @@ requests
 Pillow
 nltk
 fastapi_utils
+python-multipart
