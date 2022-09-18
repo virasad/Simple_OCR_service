@@ -38,7 +38,7 @@ def ocr_trainer(img_w, img_h, labels_txt_p, images_path, save_dir, model_name, m
                    decode='greedy')
 
     custom_cb = ClientLogger(log_url=log_url, task_id=task_id, max_epochs=max_epochs, response_url=response_url,
-                             model_path=os.path.join(save_dir, model_name),
+                             model_path=os.path.join(save_dir, model_name) + ".ckpt",
                              ocr_type=ocr_type)
     checkpoint_callback = pl.callbacks.ModelCheckpoint(
         dirpath=save_dir,
