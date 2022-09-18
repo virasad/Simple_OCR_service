@@ -1,0 +1,22 @@
+batch_max_length: 14
+characters:
+- ' '
+- '-'
+- '0'
+- '1'
+- '2'
+- '3'
+- '4'
+- '5'
+- '6'
+- '7'
+- '8'
+- '9'
+decode: greedy
+hidden_size: 256
+img_h: 32
+img_w: 128
+input_channel: 3
+lr: 0.001
+optimizer_name: Adam
+output_channel: 12

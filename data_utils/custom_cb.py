@@ -54,6 +54,13 @@ class ClientLogger(Logger):
         # Optional. Any code that needs to be run after training
         # finishes goes here
         print(f"Finalizing with status: {status}, last metrics: {self.last_metrics}")
+        if self.log_url:
+            requests.post(self.response_url, json={'status': status, 'task_id': self.task_id, 'is_finished': True,
+                                    'ocr_type': self.ocr_type,
+                                    'metrics': self.last_metrics,
+                                    'model_path': self.model_path
+                                    }
+                )
         if self.response_url:
             requests.post(self.response_url, json={'status': status, 'task_id': self.task_id, 'is_finished': True,
                                               'ocr_type': self.ocr_type,
