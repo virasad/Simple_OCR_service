@@ -35,14 +35,18 @@ class DatasetParser(object):
         with open(self.labels_p, 'r') as file:
             lines = file.readlines()
             for line in lines:
-                line = line.strip("\n").split("\t")
-                image_base_name = os.path.basename(line[0])
-                image_path = os.path.join(self.images_dir, image_base_name)
-                image_path = os.path.abspath(image_path)
-                images.append(image_path)
-                labels.append(line[1])
-                for ch in line[1]:
-                    self.characters.add(ch)
+                try: 
+                    line = line.strip("\n").split("\t")
+                    image_base_name = os.path.basename(line[0])
+                    image_path = os.path.join(self.images_dir, image_base_name)
+                    image_path = os.path.abspath(image_path)
+                    images.append(image_path)
+                    labels.append(line[1])
+                    for ch in line[1]:
+                        self.characters.add(ch)
+                except Exception as e:
+                    print(line)
+                    print(str(e))
         self.characters = sorted(list(self.characters))
         self.max_len = max(list(map(len, labels)))
         pd_dataset = pd.DataFrame({"images": images, "labels": labels}, index=None)
